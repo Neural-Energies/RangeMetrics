@@ -4,8 +4,26 @@ import numpy as np
 import streamlit as st
 import plotly.graph_objs as go
 
-st.title('Stock Analysis App')
+st.title('Range And Gap Analysis App')
 
+
+st.write("""
+This application provides two types of stock market analysis: Gap Analysis and Range Metrics Analysis.
+
+## Instructions:
+1. Enter a stock symbol (e.g., AAPL for Apple, GOOG for Google).
+2. Choose the date range for the analysis. 
+3. Select the type of analysis you want to perform from the drop-down list. 
+    - For 'Gap Analysis': Select a gap type and then enter a gap size. Press 'Submit Gap Size' to see the analysis.
+    - For 'Range Metrics': Select a frequency (Daily, Weekly, Monthly, Quarterly) and then choose a metric to display from the drop-down list. Press 'Analyze Metrics' to see the analysis.
+4. The results of the analysis will be displayed, including an interactive plot for the selected metric. 
+5. You can change your selections and rerun the analysis as desired.
+
+Please remember, this application is for informational and educational purposes only.
+
+## Financial Trade Disclaimer:
+Trading stocks and all other financial instruments involves risk. You should only make trades based on your risk tolerance and trading experience. The information provided in this application does not constitute investment advice, financial advice, trading advice, or any other sort of advice. We are not responsible for any loss caused by any information provided directly or indirectly in this application. 
+PAST PERFROMANCE IS NOT INDICATIVE OF FUTURE RESULTS.""")
 symbol = st.text_input('Enter stock symbol', 'AAPL')
 start_date = st.date_input('Start date', value=pd.to_datetime('2000-01-01'))
 end_date = st.date_input('End date', value=pd.to_datetime('2023-07-07'))
