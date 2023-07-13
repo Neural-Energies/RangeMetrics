@@ -74,62 +74,25 @@ if option_analysis == 'Gap Analysis':
                     st.write(f"Gap Fill Probability: {gap_fill_prob:.2%}")
 
 
-
-
-
-
-
 # Rest of the code for 'Range Metrics' option...
-
-# Rest of the code for 'Range Metrics' option...
-
 
 elif option_analysis == 'Range Metrics':
-    # rest of your 'Range Metrics' code...
+    # Allow the user to select the frequency
+    frequency = st.selectbox('Select Frequency', ['Daily', 'Weekly', 'Monthly', 'Quarterly'])
 
-    # rest of your 'Range Metrics' code...
+    # Map the selection to the corresponding interval
+    interval_map = {
+        'Daily': '1d',
+        'Weekly': '1wk',
+        'Monthly': '1mo',
+        'Quarterly': '3mo'
+    }
+    interval = interval_map[frequency]
 
+    # Download historical market data at the selected interval
+    df = yf.download(symbol, start=start_date, end=end_date, interval=interval)
 
-
-
-
-# Rest of the code for 'Range Metrics' option...
-
-
-# Rest of the code for 'Range Metrics' option...
-
-
-
-
-
-
-    # rest of your 'Range Metrics' code...
-    # ...
-# Allow the user to select the frequency
-frequency = st.selectbox('Select Frequency', ['Daily', 'Weekly', 'Monthly', 'Quarterly'])
-
-# Map the selection to the resample rule
-freq_map = {
-    'Daily': 'D',
-    'Weekly': 'W',
-    'Monthly': 'M',
-    'Quarterly': 'Q'
-}
-resample_rule = freq_map[frequency]
-
-# Download historical market data
-df = yf.download(symbol, start=start_date, end=end_date, interval='1d')
-
-# Resample the data based on user's selection
-df_resampled = df.resample(resample_rule).agg({
-    'Open': 'first',
-    'High': 'max',
-    'Low': 'min',
-    'Close': 'last',
-    'Volume': 'sum'
-})
-
-# Continue with your analysis using df_resampled...
+    # Continue with your analysis using df...
 
     # List of metrics
     metrics = ['Day High - Day Open', 'Open - Low', 'Open - Close', 'Close - Mid',
@@ -141,6 +104,7 @@ df_resampled = df.resample(resample_rule).agg({
 
     # Drop Down list for the user to select which metrics to display
     option = st.selectbox('Which metric do you want to display?', metrics)
+   
 
     def analyze_stock_metrics(df):
         df['Day High - Day Open'] = df['High'] - df['Open']
@@ -186,22 +150,23 @@ df_resampled = df.resample(resample_rule).agg({
         return df
 
     if st.button('Analyze Metrics'):
-        # Download historical market data
-        df = yf.download(symbol, start=start_date, end=end_date, interval='1d')
-
         # Compute metrics...
         df = analyze_stock_metrics(df)
 
         # Calculate statistics for the selected metric
         mean = df[option].mean()
         median = df[option].median()
-        mode = df[option].mode()[0]
+        mode_series = df[option].mode()
+        mode = mode_series[0] if not mode_series.empty else None
         max_val = df[option].max()
 
         # Print out the mean, mode, median, and max values
         st.write(f"Mean: {mean:.2f}")
         st.write(f"Median: {median:.2f}")
-        st.write(f"Mode: {mode:.2f}")
+        if mode is not None:
+            st.write(f"Mode: {mode:.2f}")
+        else:
+            st.write("Mode: No mode found")
         st.write(f"Max: {max_val:.2f}")
 
         # Draw an interactive plot for the selected metric
